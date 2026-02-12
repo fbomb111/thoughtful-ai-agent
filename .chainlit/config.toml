@@ -94,6 +94,9 @@ reaction_on_message_received = false
 # Name of the assistant.
 name = "Smarter Technologies Support"
 
+# Link to the GitHub repository (shows icon in header)
+github = "https://github.com/fbomb111/thoughtful-ai-agent"
+
 # default_theme = "dark"
 
 # Force a specific language for all users (e.g., "en-US", "he-IL", "fr-FR")
