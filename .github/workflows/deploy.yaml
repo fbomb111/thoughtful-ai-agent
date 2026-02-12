@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        run: az login --identity --client-id a778803b-b814-42dd-8c82-e2778c9d98c4
+
+      - name: Build and Push
+        run: |
+          az acr login --name prgptacr
+          TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          docker build \
+            -t prgptacr.azurecr.io/thoughtful-ai-agent:$TAG \
+            -t prgptacr.azurecr.io/thoughtful-ai-agent:latest \
+            .
+          docker push prgptacr.azurecr.io/thoughtful-ai-agent:$TAG
+          docker push prgptacr.azurecr.io/thoughtful-ai-agent:latest
+
+      - name: Deploy to Container App
+        run: |
+          TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          az containerapp update \
+            --name ca-thoughtful-ai \
+            --resource-group rg-doc-chat \
+            --image prgptacr.azurecr.io/thoughtful-ai-agent:$TAG
+
+      - name: Health Check
+        run: |
+          sleep 15
+          FQDN=$(az containerapp show \
+            --name ca-thoughtful-ai \
+            --resource-group rg-doc-chat \
+            --query properties.configuration.ingress.fqdn -o tsv)
+          echo "URL: https://${FQDN}"
+          for i in $(seq 1 12); do
+            if curl -sf "https://${FQDN}/" > /dev/null 2>&1; then
+              echo "Health check PASSED"
+              exit 0
+            fi
+            echo "Attempt $i/12 failed, waiting 5s..."
+            sleep 5
+          done
+          echo "Health check FAILED after 60s"
+          exit 1

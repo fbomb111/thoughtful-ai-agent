@@ -1,0 +1,10 @@
+.venv/
+.git/
+.files/
+__pycache__/
+data/
+scripts/
+.env
+*.pyc
+.chainlit/.cache/
+.chainlit/translations/

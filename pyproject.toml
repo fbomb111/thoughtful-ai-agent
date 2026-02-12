@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "thoughtful-ai-agent"
+version = "0.1.0"
+description = "Customer support AI agent for Thoughtful AI - powered by Azure Foundry with RAG"
+authors = ["Thoughtful AI"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+chainlit = "^2.0"
+httpx = "^0.28.0"
+azure-identity = "^1.21.0"
+pydantic = "^2.5.0"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
+azure-storage-blob = "^12.19.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

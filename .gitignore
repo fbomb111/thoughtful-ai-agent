@@ -1,0 +1,32 @@
+# Environment
+.env
+.env.local
+.env.dev
+.env.prod
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Chainlit runtime
+.chainlit/.cache/
+.chainlit/translations/
+.files/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Scraped data and converted KB (one-off, not in repo)
+data/scraped/
+data/kb/
+
+# OS
+.DS_Store
+Thumbs.db
