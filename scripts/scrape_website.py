@@ -21,6 +21,7 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = PROJECT_ROOT / "data" / "scraped"
@@ -46,7 +47,9 @@ def create_driver() -> webdriver.Chrome:
         "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     )
-    driver = webdriver.Chrome(options=opts)
+    opts.binary_location = "/usr/bin/chromium-browser"
+    svc = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(options=opts, service=svc)
     # Hide webdriver property from JS detection
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         "source": 'Object.defineProperty(navigator, "webdriver", {get: () => undefined});'
@@ -129,6 +132,9 @@ def should_scrape(url: str) -> bool:
         "/privacy", "/terms", "/cookie",
         "/login", "/signup", "/register",
         "/search", "/404",
+        "/thank-you", "/schedule-a-demo", "/contact-us",
+        "/subscribe", "/incident-report-form",
+        "/legal/",
     ]
     if any(pat in path for pat in skip_patterns):
         return False
