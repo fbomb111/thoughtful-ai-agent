@@ -25,6 +25,7 @@ COPY app.py chainlit.md ./
 COPY agent/ ./agent/
 COPY agent_config/ ./agent_config/
 COPY .chainlit/config.toml ./.chainlit/config.toml
+COPY public/ ./public/
 
 EXPOSE 8000
 

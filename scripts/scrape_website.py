@@ -1,5 +1,5 @@
 """
-Scrape smartertech.com (Thoughtful AI) for knowledge base content.
+Scrape foxen.com for knowledge base content.
 
 Uses Selenium headless Chrome to bypass Cloudflare protection.
 Discovers pages from sitemap and internal links, extracts content,
@@ -25,7 +25,7 @@ from selenium.webdriver.chrome.options import Options
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = PROJECT_ROOT / "data" / "scraped"
 
-SITE_URL = "https://www.smartertech.com"
+SITE_URL = "https://www.foxen.com"
 SITEMAP_URL = f"{SITE_URL}/sitemap.xml"
 
 REQUEST_DELAY = 5  # seconds between page loads (be polite)
@@ -215,7 +215,7 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     print("=" * 60)
-    print("Thoughtful AI Website Scraper")
+    print("Foxen Website Scraper")
     print("=" * 60)
     print()
 

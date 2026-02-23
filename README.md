@@ -1,20 +1,20 @@
-# Smarter Technologies Customer Support Agent
+# Foxen Customer Support Agent
 
-AI-powered customer support chatbot for Smarter Technologies, built with **Azure Foundry Agents**, **RAG** (Retrieval-Augmented Generation), and **Chainlit**.
+AI-powered customer support chatbot for Foxen (`foxen.com`), built with **Azure Foundry Agents**, **RAG** (Retrieval-Augmented Generation), and **Chainlit**.
 
-The agent answers questions about Smarter Technologies' healthcare automation products using a knowledge base of 77 documents indexed in Azure AI Search. It streams responses in real-time and cites sources from the knowledge base. For questions outside the KB, it falls back to general knowledge with an explicit disclaimer.
+The agent answers questions about Foxen's property insurance platform using a knowledge base of 77 documents indexed in Azure AI Search. It streams responses in real-time and cites sources from the knowledge base. For questions outside the KB, it falls back to general knowledge with an explicit disclaimer.
 
 ## Live Demo
 
-**Try it now**: [ca-thoughtful-ai.kinddesert-00223816.eastus.azurecontainerapps.io](https://ca-thoughtful-ai.kinddesert-00223816.eastus.azurecontainerapps.io/)
+**Try it now**: `https://<your-foxen-support-app>.azurecontainerapps.io`
 
 ![Chainlit UI](https://img.shields.io/badge/UI-Chainlit-blue) ![Python 3.11+](https://img.shields.io/badge/Python-3.11+-green) ![Azure Foundry](https://img.shields.io/badge/Azure-Foundry_Agents-0078D4)
 
 **Sample questions** (click a starter chip or type your own):
-- "What does EVA do?"
-- "How does CAM help with claims processing?"
-- "Tell me about PHIL"
-- "What is healthcare revenue cycle management?" *(general knowledge fallback)*
+- "How does Foxen track insurance compliance across a property portfolio?"
+- "What documents does Foxen monitor for coverage compliance?"
+- "How does Foxen help HOAs manage risk?"
+- "What is property insurance compliance monitoring?" *(general knowledge fallback)*
 
 ## Architecture
 
@@ -36,7 +36,7 @@ User ─── Chainlit UI ─── AgentService ─── FoundryClient ──
 | **Azure OpenAI** | `gpt-4.1` deployment | LLM powering the agent's responses |
 | **Azure AI Search** | `doc-chat-ai-search` | Vector index over the knowledge base (`text-embedding-3-large` embeddings) |
 | **Azure Blob Storage** | `docchatstorageeastus` | Stores the 77 markdown documents that make up the knowledge base |
-| **Azure Container Apps** | `ca-thoughtful-ai` | Hosts the Chainlit app (Docker container) with Managed Identity auth |
+| **Azure Container Apps** | `ca-foxen-support` | Hosts the Chainlit app (Docker container) with Managed Identity auth |
 | **Managed Identity** | `doc-chat-identity` | Passwordless authentication from the container to Foundry and AI Search |
 
 ### Application Layers
@@ -58,15 +58,15 @@ User ─── Chainlit UI ─── AgentService ─── FoundryClient ──
 
 Rather than hardcoding Q&A pairs with simple string matching, I built a production-style RAG pipeline:
 
-1. **Scraped the Smarter Technologies website** (`scripts/scrape_website.py`) — used the sitemap to discover all 76 pages (blog posts, product pages, solutions, about page), fetched the HTML, extracted article content with BeautifulSoup, and converted to clean markdown using `markdownify`. This created a comprehensive knowledge base covering EVA, CAM, PHIL, SmarterPrebill, SmarterReceivables, and all published blog content.
+1. **Scraped the Foxen website** (`scripts/scrape_website.py`) — used the sitemap to discover all 76 pages (blog posts, product pages, solutions, about page), fetched the HTML, extracted article content with BeautifulSoup, and converted to clean markdown using `markdownify`. This created a comprehensive knowledge base covering insurance tracking, compliance monitoring, and risk management content published by Foxen.
 
 2. **Built a knowledge base** — uploaded 77 markdown documents to Azure Blob Storage, then created an AI Search knowledge source that auto-provisions a vector index. Documents are chunked and embedded with `text-embedding-3-large` for semantic retrieval, so the agent can find relevant content even when the user's question doesn't match exact keywords.
 
 3. **Connected via MCP** — the Foundry agent accesses the knowledge base through a RemoteTool connection using the Model Context Protocol (MCP). Authentication uses `ProjectManagedIdentity` so the agent authenticates to AI Search without any API keys at runtime — just Azure RBAC.
 
-4. **Tuned the agent prompt** (`agent_config/instructions.md`) — mandatory KB tool usage on every query, no fabrication, explicit fallback disclosure when KB has no answer, concise response style appropriate for healthcare executives.
+4. **Tuned the agent prompt** (`agent_config/instructions.md`) — mandatory KB tool usage on every query, no fabrication, explicit fallback disclosure when KB has no answer, concise response style appropriate for property insurance stakeholders.
 
-5. **Built the chat UI** — Chainlit app with branded Smarter Technologies logo, starter chips for common questions, real-time streaming responses, and comprehensive error handling for empty inputs, failed connections, and agent errors.
+5. **Built the chat UI** — Chainlit app with branded Foxen logo, starter chips for common questions, real-time streaming responses, and comprehensive error handling for empty inputs, failed connections, and agent errors.
 
 6. **Deployed to Azure** — Dockerized the app and deployed to Azure Container Apps with Managed Identity authentication, GitHub Actions CI/CD for automated deployments on push.
 
@@ -84,7 +84,7 @@ The entire provisioning pipeline is automated in a single script (`scripts/setup
 ├── agent_config/
 │   └── instructions.md         # Agent system prompt
 ├── data/
-│   └── thoughtful-ai-kb.md     # Seed knowledge base content
+│   └── foxen-kb.md             # Seed knowledge base content
 ├── scripts/
 │   ├── setup_agent.py          # One-command Azure provisioning (7 steps)
 │   ├── teardown_agent.py       # Resource cleanup
@@ -116,9 +116,9 @@ poetry run chainlit run app.py             # http://localhost:8000
 
 ```bash
 az acr login --name <your-acr>
-docker build -t <acr>.azurecr.io/thoughtful-ai-agent:latest .
-docker push <acr>.azurecr.io/thoughtful-ai-agent:latest
-az containerapp update --name <app> --resource-group <rg> --image <acr>.azurecr.io/thoughtful-ai-agent:latest
+docker build -t <acr>.azurecr.io/foxen-support-agent:latest .
+docker push <acr>.azurecr.io/foxen-support-agent:latest
+az containerapp update --name <app> --resource-group <rg> --image <acr>.azurecr.io/foxen-support-agent:latest
 ```
 
 Or push to `main` — GitHub Actions will build, push, and deploy automatically.

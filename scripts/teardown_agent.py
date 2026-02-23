@@ -1,5 +1,5 @@
 """
-Cleanup script for the Thoughtful AI support agent.
+Cleanup script for the Foxen support agent.
 
 Removes app-specific Azure resources (leaves shared infrastructure intact):
 1. Delete Agent (all versions)
@@ -69,7 +69,7 @@ def main():
     connection_name = f"{APP_NAME}-connection"
 
     print("=" * 60)
-    print("Thoughtful AI Agent - Teardown")
+    print("Foxen Agent - Teardown")
     print("=" * 60)
     print()
 

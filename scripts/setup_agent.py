@@ -1,5 +1,5 @@
 """
-One-command Azure provisioning for the Thoughtful AI support agent.
+One-command Azure provisioning for the Foxen support agent.
 
 Provisions all resources needed for a Foundry agent with RAG:
 1. Blob Container - stores knowledge base documents
@@ -43,11 +43,11 @@ CHAT_MODEL = "gpt-4.1"
 
 @dataclass
 class AppConfig:
-    """Configuration for the Thoughtful AI agent."""
+    """Configuration for the Foxen agent."""
 
     app_name: str = "thoughtful-ai"
     agent_name: str = "thoughtful-support"
-    agent_description: str = "Thoughtful AI Customer Support Agent"
+    agent_description: str = "Foxen Customer Support Agent"
     docs_dir: str = "data"
     env_var_version_key: str = "THOUGHTFUL_AGENT_VERSION"
     agent_model: str = "gpt-4.1"

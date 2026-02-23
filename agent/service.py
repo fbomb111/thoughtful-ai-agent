@@ -1,5 +1,5 @@
 """
-Agent Service - high-level conversation management for the Thoughtful AI agent.
+Agent Service - high-level conversation management for the Foxen agent.
 
 Wraps FoundryClient with conversation lifecycle and streaming helpers.
 """

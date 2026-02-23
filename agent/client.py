@@ -1,5 +1,5 @@
 """
-Async Microsoft Foundry Client for the Thoughtful AI support agent.
+Async Microsoft Foundry Client for the Foxen support agent.
 
 Uses Microsoft Entra ID authentication for the Foundry API (2025-11-15-preview).
 Handles conversation management, streaming SSE responses, and citation parsing.

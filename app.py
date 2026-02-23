@@ -1,4 +1,4 @@
-"""Smarter Technologies Customer Support Agent - Chainlit UI."""
+"""Foxen Customer Support Agent - Chainlit UI."""
 
 import logging
 
@@ -21,20 +21,20 @@ async def set_starters():
     """Show starter suggestions on the landing page."""
     return [
         cl.Starter(
-            label="What does EVA do?",
-            message="What does EVA do and how does it help with eligibility verification?",
+            label="Insurance compliance tracking",
+            message="How does Foxen track insurance compliance across a property portfolio?",
         ),
         cl.Starter(
-            label="How CAM handles claims",
-            message="How does CAM streamline claims processing?",
+            label="Compliance documents",
+            message="What insurance documents does Foxen monitor for compliance?",
         ),
         cl.Starter(
-            label="Tell me about PHIL",
-            message="What is PHIL and how does it automate payment posting?",
+            label="HOA risk management",
+            message="How does Foxen help HOAs manage risk and compliance?",
         ),
         cl.Starter(
-            label="Why Smarter Technologies?",
-            message="What are the key benefits of using Smarter Technologies' automation agents for healthcare RCM?",
+            label="Why Foxen?",
+            message="What are the key benefits of using Foxen for property insurance compliance monitoring?",
         ),
     ]
 

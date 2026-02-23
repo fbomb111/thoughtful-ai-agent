@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "thoughtful-ai-agent"
 version = "0.1.0"
-description = "Customer support AI agent for Thoughtful AI - powered by Azure Foundry with RAG"
-authors = ["Thoughtful AI"]
+description = "Customer support AI agent for Foxen - powered by Azure Foundry with RAG"
+authors = ["Foxen"]
 readme = "README.md"
 package-mode = false
 

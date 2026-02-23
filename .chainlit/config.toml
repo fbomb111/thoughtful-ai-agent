@@ -92,10 +92,7 @@ reaction_on_message_received = false
 
 [UI]
 # Name of the assistant.
-name = "Smarter Technologies Support"
-
-# Link to the GitHub repository (shows icon in header)
-github = "https://github.com/fbomb111/thoughtful-ai-agent"
+name = "Foxen Support"
 
 # default_theme = "dark"
 
@@ -117,7 +114,7 @@ github = "https://github.com/fbomb111/thoughtful-ai-agent"
 confirm_new_chat = true
 
 # Description of the assistant. This is used for HTML tags.
-description = "AI-powered customer support for Smarter Technologies healthcare automation"
+description = "AI-powered customer support for Foxen property insurance solutions"
 
 # Chain of Thought (CoT) display mode. Can be "hidden", "tool_call" or "full".
 cot = "hidden"
@@ -152,24 +149,24 @@ alert_style = "classic"
 # Specify a custom meta image url.
 # custom_meta_image_url = "https://chainlit-cloud.s3.eu-west-3.amazonaws.com/logo/chainlit_banner.png"
 
-# Load assistant logo directly from URL.
-logo_file_url = "https://cdn.prod.website-files.com/6801153d98ce132f1f9441de/68a6250c94dde1c1bec49ebe_st-logo-color.svg"
+# Logos served from public/logo_light.svg and public/logo_dark.svg (file-based, supports dark mode)
+# logo_file_url is intentionally unset so Chainlit uses the /logo endpoint with theme variants
 
 # Load assistant avatar image directly from URL.
-default_avatar_file_url = "https://cdn.prod.website-files.com/6801153d98ce132f1f9441de/68a6250c94dde1c1bec49ebe_st-logo-color.svg"
+default_avatar_file_url = "https://cdn.prod.website-files.com/645d65c8b5c35557d464161a/6467cac05115d43eb61594b0_Foxen-Logo_Navy.svg"
 
 # Specify a custom build directory for the frontend.
 # This can be used to customize the frontend code.
 # Be careful: If this is a relative path, it should not start with a slash.
 # custom_build = "./public/build"
 
-# Specify optional one or more custom links in the header.
-# [[UI.header_links]]
-#     name = "Issues"
-#     display_name = "Report Issue"
-#     icon_url = "https://avatars.githubusercontent.com/u/128686189?s=200&v=4"
-#     url = "https://github.com/Chainlit/chainlit/issues"
-#     target = "_blank" (default)  # Optional: "_self", "_parent", "_top".
+# Custom links in the header.
+[[UI.header_links]]
+name = "github"
+display_name = "GitHub"
+icon_url = "https://github.githubassets.com/favicons/favicon-dark.svg"
+url = "https://github.com/fbomb111/thoughtful-ai-agent"
+target = "_blank"
 
 [meta]
 generated_by = "2.9.6"

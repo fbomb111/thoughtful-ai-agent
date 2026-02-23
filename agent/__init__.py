@@ -1,4 +1,4 @@
-"""Thoughtful AI Agent - Azure Foundry client library."""
+"""Foxen Agent - Azure Foundry client library."""
 
 from .client import FoundryClient, get_credential
 from .models import ChatResponse, Citation, ConversationInfo
