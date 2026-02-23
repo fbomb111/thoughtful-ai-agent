@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -71,54 +72,23 @@ def fetch_page(driver: webdriver.Chrome, url: str) -> str:
     return driver.page_source
 
 
-def discover_urls(driver: webdriver.Chrome) -> list[str]:
-    """Discover URLs from sitemap and internal links."""
-    urls = set()
-
-    # Try sitemap first
-    print("  Trying sitemap...")
+def fetch_sitemap() -> list[str]:
+    """Fetch URLs from sitemap XML using requests."""
+    print("  Fetching sitemap...")
     try:
-        source = fetch_page(driver, SITEMAP_URL)
-        # Sitemap might be XML rendered in browser
-        if "<?xml" in source or "<urlset" in source:
-            root = ET.fromstring(source)
-            ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-            for loc in root.findall(".//sm:url/sm:loc", ns):
-                urls.add(loc.text.strip())
-            if urls:
-                print(f"  Found {len(urls)} URLs from sitemap")
-                return sorted(urls)
-        # Sometimes browser wraps XML - try extracting raw URLs
-        soup = BeautifulSoup(source, "html.parser")
-        for loc in soup.find_all("loc"):
-            if loc.text and loc.text.startswith("http"):
-                urls.add(loc.text.strip())
-        if urls:
-            print(f"  Found {len(urls)} URLs from sitemap (HTML-wrapped)")
-            return sorted(urls)
+        response = requests.get(SITEMAP_URL, timeout=20)
+        response.raise_for_status()
+        root = ET.fromstring(response.text)
+        ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        urls = []
+        for loc in root.findall(".//sm:url/sm:loc", ns):
+            if loc.text:
+                urls.append(loc.text.strip())
+        print(f"  Found {len(urls)} URLs from sitemap")
+        return sorted(set(urls))
     except Exception as e:
-        print(f"  Sitemap parse failed: {e}")
-
-    # Fallback: crawl homepage and blog page for links
-    print("  Falling back to link discovery...")
-    for seed in [SITE_URL, f"{SITE_URL}/blog"]:
-        try:
-            source = fetch_page(driver, seed)
-            soup = BeautifulSoup(source, "html.parser")
-            for a in soup.find_all("a", href=True):
-                href = a["href"]
-                if href.startswith("/"):
-                    href = f"{SITE_URL}{href}"
-                if href.startswith(SITE_URL):
-                    clean = href.split("?")[0].split("#")[0].rstrip("/")
-                    if clean:
-                        urls.add(clean)
-            time.sleep(REQUEST_DELAY)
-        except Exception:
-            continue
-
-    print(f"  Discovered {len(urls)} URLs from link crawling")
-    return sorted(urls)
+        print(f"  Sitemap fetch failed: {e}")
+        return []
 
 
 def should_scrape(url: str) -> bool:
@@ -146,11 +116,27 @@ def should_scrape(url: str) -> bool:
 
 
 def classify_url(url: str) -> str:
-    """Classify URL as blog or page."""
+    """Classify URL for output filename category."""
     path = urlparse(url).path.lower()
-    if "/blog/" in path or "/post/" in path or "/article/" in path:
+    if path.startswith("/blog/"):
         return "blog"
-    return "page"
+    if path.startswith("/resource-center/"):
+        return "resource-center"
+    if path.startswith("/insights/"):
+        return "insights"
+    if path.startswith("/properties/"):
+        return "properties"
+    if path.startswith("/residents/"):
+        return "residents"
+    if path.startswith("/videos/"):
+        return "videos"
+    if path.startswith("/webinars/"):
+        return "webinars"
+    if path.startswith("/customer-spotlights/"):
+        return "customer-spotlights"
+    if path.startswith("/ebooks/") or path.startswith("/reports/") or path.startswith("/brochures/"):
+        return "downloads"
+    return "general"
 
 
 def extract_content(html: str) -> tuple[str, str]:
@@ -230,7 +216,7 @@ def main():
     try:
         # Step 1: Discover URLs
         print("[Step 1] Discovering URLs...")
-        all_urls = discover_urls(driver)
+        all_urls = fetch_sitemap()
         if not all_urls:
             print("No URLs found. Exiting.")
             return
@@ -239,10 +225,6 @@ def main():
         print()
         print("[Step 2] Filtering URLs...")
         urls_to_scrape = [u for u in all_urls if should_scrape(u)]
-        blogs = [u for u in urls_to_scrape if classify_url(u) == "blog"]
-        pages = [u for u in urls_to_scrape if classify_url(u) == "page"]
-        print(f"  Blog posts: {len(blogs)}")
-        print(f"  Pages: {len(pages)}")
         print(f"  Total: {len(urls_to_scrape)}")
 
         # Step 3: Scrape
@@ -273,7 +255,7 @@ def main():
                 # Build filename
                 slug = slugify(path.replace("/", " ").strip()) or "home"
                 category = classify_url(url)
-                filename = f"{category}-{slug}.md" if category == "blog" else f"{slug}.md"
+                filename = f"{category}-{slug}.md"
 
                 full_content = f"# {title}\n\n*Source: {url}*\n\n---\n\n{markdown}"
                 (OUTPUT_DIR / filename).write_text(full_content, encoding="utf-8")
