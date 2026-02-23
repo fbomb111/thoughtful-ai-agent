@@ -21,20 +21,20 @@ async def set_starters():
     """Show starter suggestions on the landing page."""
     return [
         cl.Starter(
-            label="Insurance compliance tracking",
-            message="How does Foxen track insurance compliance across a property portfolio?",
+            label="Waiver coverage & limits",
+            message="What does the Foxen Waiver Program cover and what are the dollar limits for liability, personal contents, and living expenses?",
         ),
         cl.Starter(
-            label="Compliance documents",
-            message="What insurance documents does Foxen monitor for compliance?",
+            label="PetClear costs",
+            message="How much does PetClear cost per pet, and do service or support animals have to pay the verification fee?",
         ),
         cl.Starter(
-            label="HOA risk management",
-            message="How does Foxen help HOAs manage risk and compliance?",
+            label="Waiver product tiers",
+            message="What's the difference between WaiverCore, WaiverFlex, and WaiverCell?",
         ),
         cl.Starter(
-            label="Why Foxen?",
-            message="What are the key benefits of using Foxen for property insurance compliance monitoring?",
+            label="Reporting property damage",
+            message="How do property managers report damage through the Foxen Portal, and what happens after a claim is submitted?",
         ),
     ]
 
